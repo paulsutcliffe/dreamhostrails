@@ -9,7 +9,7 @@ get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javas
 inside('/') do
   FileUtils.rm_rf 'Gemfile'
 end
-get "https://github.com/paulyoyo/dreamhostrails/Gemfile", "Gemfile"
+get "https://github.com/paulyoyo/dreamhostrails/blob/master/Gemfile", "Gemfile"
 
 route 'root :to => "home#index"'
 
