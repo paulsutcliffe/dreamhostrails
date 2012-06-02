@@ -2,28 +2,40 @@
 # http://www.kosmyka.com/
 #---
 
+inside('public/javascripts') do
+  FileUtils.rm_rf %w(controls.js dragdrop.js effects.js prototype.js rails.js)
+end
+
 # Download latest jQuery drivers
 get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 
 # Download HTML5 Boilerplate JavaScripts
 get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/modernizr-2.0.min.js", "public/javascripts/modernizr.js"
-get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/jquery-1.6.1.min.js", "public/javascripts/jquery.js"
 get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/respond.min.js", "public/javascripts/respond.js"
 get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/plugins.js", "public/javascripts/plugins.js"
 
-inside('public/javascripts') do
-  FileUtils.rm_rf %w(controls.js dragdrop.js effects.js prototype.js rails.js)
-end
-
 # Update Gemfile
-FileUtils.rm_rf 'Gemfile'
-get "https://github.com/paulyoyo/dreamhostrails/blob/master/Gemfile", "Gemfile"
+gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql", "~> 2.8.1"'
+gem "paperclip", "~>2.0"
+gem "will_paginate"
+gem "inherited_resources"
+gem "rake", "~>0.9.2"
+gem "client_side_validations"
+gem "jquery-rails"
+gem "paper_trail"
+gem "metamagic"
+gem "dynamic_sitemaps"
+gem "friendly_id", "~>4.0.0.beta14"
+
+gsub_file 'config/database.yml', /mysql2/, 'mysql'
 
 route 'root :to => "home#index"'
 
 run "bundle install"
-run "rails g jquery:install --ui"
-run "rails plugin install git://github.com/mokolabs/headliner.git"
+
+inside('public/') do
+  FileUtils.rm_rf %w(index.html favicon.ico)
+end
 
 initializer 'i18n.rb', 
 %q{#encoding: utf-8
@@ -34,12 +46,6 @@ LANGUAGES = [
   ["Espa&ntilde;ol".html_safe, 'es']
 ]
 }
-
-run "rm README"
-run "rm public/index.html"
-run "rm public/favicon.ico"
-run "rm public/robots.txt"
-run "rm public/images/rails.png"
 
 gsub_file 'config.ru', /# This file is used by Rack-based servers to start the application./ do
   "if ENV['RAILS_ENV'] == 'production'
@@ -52,14 +58,8 @@ end
 
 gsub_file 'config/environment.rb', /# Load the rails application/ do
   "# Load the rails application
-  ENV['GEM_PATH'] = '/home/dreamhostusername/gems:/usr/lib/ruby/gems/1.8"
+  ENV['GEM_PATH'] = '/home/dreamhostusername/gems:/usr/lib/ruby/gems/1.8'"
 end
-
-# Headliner plugin 
-plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
-
-#generate :model, "meta keywords:string description:text"
-#generate :controller, "home index"
 
 # Setup Google Analytics
 if ask("Do you have Google Analytics key? (N/y)").upcase == 'Y'
@@ -92,5 +92,11 @@ append_file "app/views/layouts/application.html.erb", <<-CODE
 CODE
 end
 
-#rake "db:create"
-#rake "db:migrate"
+rake "db:create"
+rake "db:migrate"
+
+# Headliner plugin 
+plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
+run "rails g jquery:install --ui"
+run "rails g controller home index"
+run "rails g scaffold meta keywords:string description:text"
