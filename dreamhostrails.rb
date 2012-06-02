@@ -5,10 +5,18 @@
 # Download latest jQuery drivers
 get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 
-# Update Gemfile
-inside('/') do
-  FileUtils.rm_rf 'Gemfile'
+# Download HTML5 Boilerplate JavaScripts
+get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/modernizr-2.0.min.js", "public/javascripts/modernizr.js"
+get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/jquery-1.6.1.min.js", "public/javascripts/jquery.js"
+get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/respond.min.js", "public/javascripts/respond.js"
+get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/plugins.js", "public/javascripts/plugins.js"
+
+inside('public/javascripts') do
+  FileUtils.rm_rf %w(controls.js dragdrop.js effects.js prototype.js rails.js)
 end
+
+# Update Gemfile
+FileUtils.rm_rf 'Gemfile'
 get "https://github.com/paulyoyo/dreamhostrails/blob/master/Gemfile", "Gemfile"
 
 route 'root :to => "home#index"'
@@ -33,26 +41,19 @@ run "rm public/favicon.ico"
 run "rm public/robots.txt"
 run "rm public/images/rails.png"
 
-file "config.ru", 
-%q{if ENV['RAILS_ENV'] == 'production'
-  ENV['HOME'] = '/home/dreamhostusername'
-  ENV['GEM_HOME'] = '/home/dreamhostusername/.gems'
-  ENV['GEM_PATH'] = '/home/dreamhostusername/.gems'
+gsub_file 'config.ru', /# This file is used by Rack-based servers to start the application./ do
+  "if ENV['RAILS_ENV'] == 'production'
+    ENV['HOME'] = '/home/dreamhostusername'
+    ENV['GEM_HOME'] = '/home/dreamhostusername/.gems'
+    ENV['GEM_PATH'] = '/home/dreamhostusername/.gems'
+  end
+  # This file is used by Rack-based servers to start the application."
 end
-# This file is used by Rack-based servers to start the application.
 
-require ::File.expand_path('../config/environment',  __FILE__)
-run #{app_name}::Application
-}
-
-file "config/enviroment.rb",
-%q{ENV['GEM_PATH'] = '/home/dreamhostusername/gems:/usr/lib/ruby/gems/1.8'
-# Load the rails application
-require File.expand_path('../application', __FILE__)
-
-# Initialize the rails application
-#{app_name}::Application.initialize!
-}
+gsub_file 'config/environment.rb', /# Load the rails application/ do
+  "# Load the rails application
+  ENV['GEM_PATH'] = '/home/dreamhostusername/gems:/usr/lib/ruby/gems/1.8"
+end
 
 # Headliner plugin 
 plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
