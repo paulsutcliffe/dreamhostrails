@@ -5,18 +5,14 @@
 # Download latest jQuery drivers
 get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 
+# Update Gemfile
+inside('/') do
+  FileUtils.rm_rf 'Gemfile'
+end
+get "https://github.com/paulyoyo/dreamhostrails/Gemfile", "Gemfile"
+
 route 'root :to => "home#index"'
-gem "mysql", "~> 2.8.1"
-gem "paperclip", "~>2.0"
-gem "will_paginate"
-gem "inherited_resources"
-gem "rake", "~>0.9.2"
-gem "client_side_validations"
-gem "jquery-rails"
-gem "paper_trail"
-gem "metamagic"
-gem "dynamic_sitemaps"
-gem "friendly_id", "~>4.0.0.beta14"
+
 run "bundle install"
 run "rails g jquery:install --ui"
 run "rails plugin install git://github.com/mokolabs/headliner.git"
