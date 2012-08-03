@@ -16,4 +16,4 @@ You can make a clone and apply the template locally:<br>
 `rails new <appname> -d mysql -m <path/to/dremahostrails.rb>`<br>
 
 Or you can create a new rails app aplying the template directly from github:<br>
-`rails new <appname> -d mysql -m https://github.com/paulyoyo/dreamhostrails/blob/master/dreamhostrails.rb`<br>
+`rails new <appname> -d mysql -m https://raw.github.com/paulsutcliffe/dreamhostrails/master/dreamhostrails.rb`<br>
