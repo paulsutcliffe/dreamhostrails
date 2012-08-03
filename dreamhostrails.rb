@@ -7,15 +7,25 @@ inside('public/javascripts') do
 end
 
 # Download latest jQuery drivers
-get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
-
-# Download HTML5 Boilerplate JavaScripts
-get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/modernizr-2.0.min.js", "public/javascripts/modernizr.js"
-get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/libs/respond.min.js", "public/javascripts/respond.js"
-get "https://github.com/russfrisch/html5-boilerplate/raw/master/js/plugins.js", "public/javascripts/plugins.js"
+# get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 
 # Update Gemfile
-gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql", "~> 2.8.1"'
+gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
+gsub_file 'Gemfile', /# gem 'capistrano'/, 'gem "capistrano"'
+append_file "Gemfile", <<-CODE
+group :development do
+  gem 'barista'
+  gem 'yui-compressor', :require => 'yui/compressor'
+  gem 'sass'
+  gem 'json' # sprocket dependency for Ruby 1.8 only
+  gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git'
+  gem 'compass', '>= 0.13.alpha.0'
+  gem 'compass-rails', '>= 1.0.2'
+  gem 'susy'
+end
+
+gem "haml"
+gem "haml-rails"
 gem "paperclip", "~>2.0"
 gem "will_paginate"
 gem "inherited_resources"
@@ -24,10 +34,22 @@ gem "client_side_validations"
 gem "jquery-rails"
 gem "paper_trail"
 gem "metamagic"
-gem "dynamic_sitemaps"
 gem "friendly_id", "~>4.0.0.beta14"
+# gem "devise"
+gem "nifty-generators"
+gem "auto_html"
+gem "page_title_helper"
+gem "sitemap_generator"
 
-gsub_file 'config/database.yml', /mysql2/, 'mysql'
+group :test do
+  gem 'cucumber-rails'
+  gem 'database_cleaner'
+  gem 'simplecov'
+end
+
+gem 'rspec-rails', :group => [:development, :test]
+CODE
+
 
 route 'root :to => "home#index"'
 
@@ -47,19 +69,122 @@ LANGUAGES = [
 ]
 }
 
+initializer 'barista_config.rb', 
+%q{
+# Configure barista.
+unless Rails.env.production?
+Barista.configure do |c|
+
+  # Change the root to use app/scripts
+  c.root = Rails.root.join("app", "assets","javascripts")
+
+  # Change the output root, causing Barista to compile into public/coffeescripts
+  c.output_root = Rails.root.join("public", "javascripts")
+  #
+  # Disable auto compile, use generated file directly:
+  # c.auto_compile = false
+
+  # Add a new framework:
+
+  # c.register :tests, :root => Rails.root.join('test', 'coffeescript'), :output_prefix => 'test'
+
+  # Disable wrapping in a closure:
+  # c.bare = true
+  # ... or ...
+  # c.bare!
+
+  # Change the output root for a framework:
+
+  # c.change_output_prefix! 'framework-name', 'output-prefix'
+
+  # or for all frameworks...
+
+  # c.each_framework do |framework|
+  #   c.change_output_prefix! framework, "vendor/#{framework.name}"
+  # end
+
+  # or, prefix the path for the app files:
+
+  # c.change_output_prefix! :default, 'my-app-name'
+
+  # or, change the directory the framework goes into full stop:
+
+  # c.change_output_prefix! :tests, Rails.root.join('spec', 'javascripts')
+
+  # or, hook into the compilation:
+
+  # c.before_compilation   { |path|         puts "Barista: Compiling #{path}" }
+  # c.on_compilation       { |path|         puts "Barista: Successfully compiled #{path}" }
+  # c.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }
+  # c.on_compilation_with_warning { |path, output| puts "Barista: Compilation of #{path} had a warning:\n#{output}" }
+
+  # Turn off preambles and exceptions on failure:
+
+  # c.verbose = false
+
+  # Or, make sure it is always on
+  # c.verbose!
+
+  # If you want to use a custom JS file, you can as well
+  # e.g. vendoring CoffeeScript in your application:
+  # c.js_path = Rails.root.join('public', 'javascripts', 'coffee-script.js')
+
+  # Make helpers and the HAML filter output coffee-script instead of the compiled JS.
+  # Used in combination with the coffeescript_interpreter_js helper in Rails.
+  # c.embedded_interpreter = true
+
+end
+end
+}
+
 gsub_file 'config.ru', /# This file is used by Rack-based servers to start the application./ do
-  "if ENV['RAILS_ENV'] == 'production'
-    ENV['HOME'] = '/home/dreamhostusername'
-    ENV['GEM_HOME'] = '/home/dreamhostusername/.gems'
-    ENV['GEM_PATH'] = '/home/dreamhostusername/.gems'
-  end
-  # This file is used by Rack-based servers to start the application."
+"if ENV['RAILS_ENV'] == 'production'
+  ENV['HOME'] ||= `echo ~`.strip
+  ENV['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
+  ENV['GEM_HOME'] = File.expand_path('~/.gems')
+end
+# This file is used by Rack-based servers to start the application."
 end
 
 gsub_file 'config/environment.rb', /# Load the rails application/ do
-  "# Load the rails application
-  ENV['GEM_PATH'] = '/home/dreamhostusername/gems:/usr/lib/ruby/gems/1.8'"
+"# Load the rails application
+ENV['HOME'] ||= `echo ~`.strip
+ENV['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
+ENV['GEM_HOME'] = File.expand_path('~/.gems')"
 end
+
+file "public/dispatch.fcgi", <<-CODE
+#!/usr/bin/ruby
+
+# Dreamhost clears environment variables when calling dispatch.fcgi, so set them here 
+ENV['RAILS_ENV'] ||= 'production'
+ENV['HOME'] ||= `echo ~`.strip
+ENV['GEM_HOME'] = File.expand_path('~/.gems')
+ENV['GEM_PATH'] = File.expand_path('~/.gems') + ":" + '/usr/lib/ruby/gems/1.8'
+
+require 'rubygems'
+Gem.clear_paths
+require 'fcgi'
+
+require File.join(File.dirname(__FILE__), '../config/environment')
+
+class Rack::PathInfoRewriter
+ def initialize(app)
+   @app = app
+ end
+
+ def call(env)
+   env.delete('SCRIPT_NAME')
+   parts = env['REQUEST_URI'].split('?')
+   env['PATH_INFO'] = parts[0]
+   env['QUERY_STRING'] = parts[1].to_s
+   @app.call(env)
+ end
+end
+
+# Change ApplicationName with you app name found in config/application.rb next to module
+Rack::Handler::FastCGI.run  Rack::PathInfoRewriter.new(ApplicationName::Application)
+CODE
 
 # Setup Google Analytics
 if ask("Do you have Google Analytics key? (N/y)").upcase == 'Y'
@@ -99,4 +224,3 @@ rake "db:migrate"
 plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
 run "rails g jquery:install --ui"
 run "rails g controller home index"
-run "rails g scaffold meta keywords:string description:text"
