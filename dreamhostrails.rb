@@ -11,6 +11,20 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfi
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 
+
+append_file 'Rakefile', <<-CODE
+
+module ::AppName
+  class Application
+    include Rake::DSL
+  end
+end
+
+module ::RakeFileUtils
+  extend Rake::FileUtilsExt
+end
+CODE
+
 # Update Gemfile
 gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
 gsub_file 'Gemfile', /# gem 'capistrano'/, 'gem "capistrano"'
@@ -158,3 +172,13 @@ rake "db:migrate"
 plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
 run "rails g jquery:install --ui"
 run "rails g controller home index"
+
+# Sass + Compass + Susy
+run "compass config config/config.rb --sass-dir=app/assets/stylesheets --css-dir=public/stylesheets --images-dir=public/images --javascripts-dir=public/javascripts"
+run "compass init --config config/config.rb"
+append_file "config.rb", <<-CODE
+require "susy"
+CODE
+append_file "app/assets/stylesheets/screen.css", <<-CODE
+@import "susy";
+CODE
