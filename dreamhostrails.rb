@@ -14,7 +14,8 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializ
 
 append_file 'Rakefile', <<-CODE
 
-module ::AppName
+# Change ApplicationName with you app name found in config/application.rb next to module
+module ::ApplicationName
   class Application
     include Rake::DSL
   end

@@ -7,8 +7,11 @@ Important
 ==========
 
 1.  Dreamhost allows to use Rails 3.0.3 strictly on their shared servers.
-2.  You must change the username on the config.ru and config/environment.rb files for your dreamhost username
-3.  Your dreamhost username must be ssh enabled
+2.  You must edit manually the follow files with the Application Name:
+    - RakeFile
+    - pulbic/dispatch.fcgi
+3.  You should fill your Capistrano setup (config/deploy.rb) with your data.
+4.  Your dreamhost username must be ssh enabled
 
 How to Use
 ===========
