@@ -1,14 +1,15 @@
 require "bundler/capistrano"
-default_environment['PATH']='/usr/lib/ruby/gems/1.8/bin:/home/railschaxras/.gems/bin:/usr/local/bin:/usr/bin:/bin'
-default_environment['GEM_PATH']='/home/railschaxras/.gems:/usr/lib/ruby/gems/1.8'
 
-set :user, "railschaxras"
-set :domain, "yorkville.dreamhost.com"
-set :project, "chaxras"
-set :application, "chaxras"
+set :user, "dreamhostuser"
+set :domain, "dreamhostserver.dreamhost.com"
+set :project, "projectname"
+set :application, "applicationname"
 set :applicationdir, "/home/#{user}/#{application}"  # The standard Dreamhost setup
-set :repository,  "git@github.com:paulsutcliffe/chaxras.git"
+set :repository,  "git@github.com:githubusername/githubrepository.git"
 default_run_options[:pty] = true
+
+default_environment['PATH']='/usr/lib/ruby/gems/1.8/bin:/home/#{user}/.gems/bin:/usr/local/bin:/usr/bin:/bin'
+default_environment['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
 
 ssh_options[:forward_agent] = true
 set :git_enable_submodules, 1
@@ -27,8 +28,6 @@ role :db,  domain, :primary => true # This is where Rails migrations will run
 set :use_sudo, false
 
 after 'deploy:create_symlink' do
-  run "chmod 775 /home/railschaxras/chaxras/current/public/dispatch.fcgi"
-  run "rm /home/railschaxras/chaxras/current/public/stylesheets/powerhouse.css"
-  run "rm /home/railschaxras/chaxras/current/public/javascripts/powerfactory.js"
+  run "chmod 775 /#{applicationdir}/current/public/dispatch.fcgi"
 end
 

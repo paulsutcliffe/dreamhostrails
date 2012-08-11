@@ -11,11 +11,10 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfi
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 
-
+gsub_file 'Rakefile', '#{app_name.camelize}::Application.load_tasks', ''
 append_file 'Rakefile', <<-CODE
 
-# Change ApplicationName with you app name found in config/application.rb next to module
-module ::ApplicationName
+module ::#{app_name.camelize}
   class Application
     include Rake::DSL
   end
@@ -24,6 +23,8 @@ end
 module ::RakeFileUtils
   extend Rake::FileUtilsExt
 end
+
+#{app_name.camelize}::Application.load_tasks
 CODE
 
 # Update Gemfile
@@ -52,7 +53,7 @@ gem "jquery-rails"
 gem "paper_trail"
 gem "metamagic"
 gem "friendly_id", "~>4.0.0.beta14"
-# gem "devise"
+gem "devise"
 gem "nifty-generators"
 gem "auto_html"
 gem "page_title_helper"
@@ -131,8 +132,7 @@ class Rack::PathInfoRewriter
  end
 end
 
-# Change ApplicationName with you app name found in config/application.rb next to module
-Rack::Handler::FastCGI.run  Rack::PathInfoRewriter.new(ApplicationName::Application)
+Rack::Handler::FastCGI.run  Rack::PathInfoRewriter.new(#{app_name.camelize}::Application)
 CODE
 
 # Setup Google Analytics
