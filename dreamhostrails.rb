@@ -76,9 +76,7 @@ inside('public/') do
   FileUtils.rm_rf %w(index.html favicon.ico)
 end
 
-inside('config/') do
-  FileUtils.rm_rf database.yml
-end
+run "rm config/database.yml"
 
 db_user = ask("Please enter your local mysql user")
 db_password = ask("Please enter your local mysql password")
