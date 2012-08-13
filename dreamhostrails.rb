@@ -201,6 +201,7 @@ end
 
 if ask("Are you using Haml? (N/y)").upcase == 'Y'
   rails g nifty:layout --haml
+  run "rm app/views/layouts/application.html.erb"
 else
   rails g nifty:layout
 end
