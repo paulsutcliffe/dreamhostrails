@@ -1,5 +1,5 @@
 # Configure barista.
-unless Rails.env.production?
+unless Rails.env.production? or Rails.env.test?
 Barista.configure do |c|
 
   # Change the root to use app/scripts

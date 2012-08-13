@@ -11,7 +11,7 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfi
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 
-gsub_file 'Rakefile', '#{app_name.camelize}::Application.load_tasks', ''
+gsub_file 'Rakefile', '#{app_name.camelize}::Application.load_tasks', '#fix for ruby 1.8.7'
 append_file 'Rakefile', <<-CODE
 
 module ::#{app_name.camelize}
@@ -68,7 +68,6 @@ end
 gem 'rspec-rails', :group => [:development, :test]
 CODE
 
-
 route 'root :to => "home#index"'
 
 run "bundle install"
@@ -77,7 +76,7 @@ inside('public/') do
   FileUtils.rm_rf %w(index.html favicon.ico)
 end
 
-initializer 'i18n.rb', 
+initializer 'i18n.rb',
 %q{#encoding: utf-8
 I18n.default_locale = :es
 
@@ -106,7 +105,7 @@ end
 file "public/dispatch.fcgi", <<-CODE
 #!/usr/bin/ruby
 
-# Dreamhost clears environment variables when calling dispatch.fcgi, so set them here 
+# Dreamhost clears environment variables when calling dispatch.fcgi, so set them here
 ENV['RAILS_ENV'] ||= 'production'
 ENV['HOME'] ||= `echo ~`.strip
 ENV['GEM_HOME'] = File.expand_path('~/.gems')
@@ -169,10 +168,12 @@ end
 rake "db:create"
 rake "db:migrate"
 
-# Headliner plugin 
+# Headliner plugin
 plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
 run "rails g jquery:install --ui"
 run "rails g controller home index"
+
+run "rails g cucumber:install"
 
 # Sass + Compass + Susy
 run "compass config config/config.rb --sass-dir=app/assets/stylesheets --css-dir=public/stylesheets --images-dir=public/images --javascripts-dir=public/javascripts"
