@@ -199,6 +199,12 @@ append_file "app/views/layouts/application.html.erb", <<-CODE
 CODE
 end
 
+if ask("Are you using Haml? (N/y)").upcase == 'Y'
+  rails g nifty:layout --haml
+else
+  rails g nifty:layout
+end
+
 rake "db:create"
 rake "db:migrate"
 
