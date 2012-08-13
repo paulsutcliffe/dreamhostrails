@@ -11,7 +11,7 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfi
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 
-gsub_file 'Rakefile', '#{app_name.camelize}::Application.load_tasks', '#fix for ruby 1.8.7'
+gsub_file 'Rakefile', /#{app_name.camelize}::Application.load_tasks/, '#fix for ruby 1.8.7'
 append_file 'Rakefile', <<-CODE
 
 module ::#{app_name.camelize}
@@ -75,6 +75,42 @@ run "bundle install"
 inside('public/') do
   FileUtils.rm_rf %w(index.html favicon.ico)
 end
+
+inside('config/') do
+  FileUtils.rm_rf database.yml
+end
+
+db_user = ask("Please enter your local mysql user")
+db_password = ask("Please enter your local mysql password")
+
+file "config/database.yml", <<-CODE
+defaults: &defaults
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  pool: 5
+  username: #{db_user}
+  password: #{db_password}
+  socket: /tmp/mysql.sock
+
+development:
+  database: #{app_name.camelize}_development
+  <<: *defaults
+
+test: &test
+  database: #{app_name.camelize}_test
+  <<: *defaults
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  host:
+  database: #{app_name.camelize}_production
+  pool: 5
+  username:
+  password:
+CODE
 
 initializer 'i18n.rb',
 %q{#encoding: utf-8
