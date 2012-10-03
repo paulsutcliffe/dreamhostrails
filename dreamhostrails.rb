@@ -31,7 +31,7 @@ module ::RakeFileUtils
 end
 
 #{app_name.camelize}::Application.load_tasks
-CODE)
+CODE
 
 # Update Gemfile
 gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
