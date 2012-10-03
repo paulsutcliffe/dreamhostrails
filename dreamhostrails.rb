@@ -15,6 +15,7 @@ get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfi
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/app/views/layouts/application.html.haml", "app/views/layouts/application.html.haml"
+get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/public/.htaccess", "public/.htaccess"
 
 gsub_file 'Rakefile', /#{app_name.camelize}::Application.load_tasks/, '#fix for ruby 1.8.7'
 append_file 'Rakefile', <<-CODE
@@ -30,7 +31,7 @@ module ::RakeFileUtils
 end
 
 #{app_name.camelize}::Application.load_tasks
-CODE
+CODE)
 
 # Update Gemfile
 gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
@@ -97,11 +98,11 @@ defaults: &defaults
   socket: /tmp/mysql.sock
 
 development:
-  database: #{app_name.camelize}_development
+  database: #{app_name.camelize(:lower)}_development
   <<: *defaults
 
 test: &test
-  database: #{app_name.camelize}_test
+  database: #{app_name.camelize(:lower)}_test
   <<: *defaults
 
 production:
@@ -109,7 +110,7 @@ production:
   encoding: utf8
   reconnect: false
   host:
-  database: #{app_name.camelize}_production
+  database: #{app_name.camelize(:lower)}_production
   pool: 5
   username:
   password:
