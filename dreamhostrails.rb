@@ -195,12 +195,12 @@ file "app/views/shared/_google_analytics.html.erb", <<-CODE
 CODE
 
 if ga_key
-append_file "app/views/layouts/application.html.erb", <<-CODE
-<%= render :partial => 'shared/google_analytics' %>
+append_file "app/views/layouts/application.html.haml", <<-CODE
+    = render 'shared/google_analytics'
 CODE
 else
-append_file "app/views/layouts/application.html.erb", <<-CODE
-<%#= render :partial => 'shared/google_analytics' %>
+append_file "app/views/layouts/application.html.haml", <<-CODE
+    = #render 'shared/google_analytics'
 CODE
 end
 
