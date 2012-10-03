@@ -6,10 +6,15 @@ inside('public/javascripts') do
   FileUtils.rm_rf %w(controls.js dragdrop.js effects.js prototype.js rails.js)
 end
 
+inside('app/views/layouts') do
+  FileUtils.rm 'application.html.erb'
+end
+
 # Downloads
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfile"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
+get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/app/views/layouts/application.html.haml", "app/views/layouts/application.html.haml"
 
 gsub_file 'Rakefile', /#{app_name.camelize}::Application.load_tasks/, '#fix for ruby 1.8.7'
 append_file 'Rakefile', <<-CODE
@@ -199,18 +204,10 @@ append_file "app/views/layouts/application.html.erb", <<-CODE
 CODE
 end
 
-if ask("Are you using Haml? (N/y)").upcase == 'Y'
-  rails g nifty:layout --haml
-  run "rm app/views/layouts/application.html.erb"
-else
-  rails g nifty:layout
-end
-
 rake "db:create"
 rake "db:migrate"
 
-# Headliner plugin
-plugin 'headliner', :git => "git://github.com/mokolabs/headliner.git"
+# Plugins
 run "rails g jquery:install --ui"
 run "rails g controller home index"
 

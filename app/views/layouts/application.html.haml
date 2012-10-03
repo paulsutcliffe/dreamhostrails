@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %title= page_title
+    = stylesheet_link_tag '/stylesheets/screen.css'
+    = javascript_include_tag :defaults
+    /[if lt IE 9]
+      %script{:src => 'http://html5shim.googlecode.com/svn/trunk/html5.js'}
+    = yield :scripts
+    = csrf_meta_tag
+    = favicon_link_tag "/favicon.png"
+    == <meta name="keywords" content="" />
+    == <meta name="description" content="" />
+    == <meta name="googlebot" content="index,follow" />
+    == <meta name="robots" content="index,follow" />
+    == <meta name="Revisit-After" content="7 days" />
+    == <meta name="city" content="Lima" />
+    == <meta name="country" content="Peru" />
+    == <meta name="state" content="Lima" />
+    == <meta name="zip code" content="Lima18" />
+    == <meta name="subject" content="" />
+    == <meta name="author" content="Kosmyka.com" />
+    == <meta name="copyright" content="&copy;Todos los derechos reservados." />
+    == <meta name="geo.placename" content="Lima, Peru" />
+    == <meta name="geo.region" content="PE-Lima" />
+
+  %body{:id => "#{bodyid}", :class => "#{bodyclass}"}
+    #page-wrapper
+      - if notice
+        %p.notice= notice
+
+      %header
+        .container
+          %h1#logo
+            = link_to image_tag('/images/logo.png'), root_path
+            %span Rails App Name
+
+        #page
+          .container
+            = yield
+
+    %footer#footer-bottom.sixteen.columns
+      .container
+        %p#info
+          123 4567
+          %br
+          info@domain.com
+      .container
+        %p#copyright
+          = t('layout.copyright')
+        %p#author
+          = t('layout.development')
+          = link_to image_tag('/images/kosmyka.png'), 'http://www.kosmyka.com', :target => '_blank'
