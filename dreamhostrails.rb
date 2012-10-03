@@ -68,7 +68,7 @@ gem "sitemap_generator"
 group :test do
   gem 'cucumber-rails'
   gem 'database_cleaner'
-  gem 'simplecov'
+  gem 'factory_girl_rails'
 end
 
 gem 'rspec-rails', :group => [:development, :test]
