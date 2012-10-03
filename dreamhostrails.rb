@@ -219,6 +219,6 @@ run "compass init --config config/config.rb"
 append_file "config.rb", <<-CODE
 require "susy"
 CODE
-append_file "app/assets/stylesheets/screen.css", <<-CODE
+append_file "app/assets/stylesheets/screen.scss", <<-CODE
 @import "susy";
 CODE
