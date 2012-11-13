@@ -13,12 +13,41 @@ Important
 
 How to Use
 ===========
-You can make a clone and apply the template locally:<br> 
+
+Even though Dreamhost guys tells you that you can't deploy your rails app with Passenger on shared servers and the only way is with FastCGI, that has known bugs with rails. Thanks to `https://github.com/jgeiger`, now you have to make some dirty stuff to get your rails app working smooth with Phussion Passenger. Awesome.<br>
+
+The full article is here: `http://blog.joeygeiger.com/2010/05/17/i-beat-dreamhost-how-to-really-get-rails-3-bundler-and-dreamhost-working/`<br>
+
+But if you are lazy or desperate, you can just do the following:<br>
+
+Add this to your .bashrc<br>
+`export PATH=$HOME/.gems/bin:$HOME/opt/bin:$PATH
+export GEM_HOME=$HOME/.gems
+export GEM_PATH="$GEM_HOME"
+export RUBYLIB="$HOME/opt/lib:$RUBYLIB"
+
+alias gem="nice -n19 ~/opt/bin/gem"`<br>
+
+This will setup your shell to use local gems installed in your .gems directory, setup the path to check there first and opt/bin as well. Next we need to install a newer version of rubygems.<br>
+`mkdir ~/src
+mkdir ~/opt
+cd src
+wget http://production.cf.rubygems.org/rubygems/rubygems-1.3.7.tgz
+tar xvfz rubygems-1.3.7.tgz
+cd rubygems-1.3.7
+ruby setup.rb --prefix=$HOME/opt
+cd ~/opt/bin/
+ln -s gem1.8 gem
+gem update --system
+gem install bundler
+gem install rake`<br>
+
+You can make a clone and apply the template locally:<br>
 `rails new <appname> -d mysql -m <path/to/dremahostrails.rb>`<br>
 
 Or you can create a new rails app aplying the template directly from github:<br>
 `rails new <appname> -d mysql -m https://raw.github.com/paulsutcliffe/dreamhostrails/master/dreamhostrails.rb`<br>
-	
+
 Contact
 =======
 

@@ -8,7 +8,6 @@ set :applicationdir, "/home/#{user}/#{application}"  # The standard Dreamhost se
 set :repository,  "git@github.com:githubusername/githubrepository.git"
 default_run_options[:pty] = true
 
-default_environment['PATH']='/usr/lib/ruby/gems/1.8/bin:/home/#{user}/.gems/bin:/usr/local/bin:/usr/bin:/bin'
 default_environment['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
 
 ssh_options[:forward_agent] = true
@@ -29,5 +28,7 @@ set :use_sudo, false
 
 after 'deploy:create_symlink' do
   run "chmod 775 /#{applicationdir}/current/public/dispatch.fcgi"
+  run "killall -USR1 Rack"
+  run "killall -USR1 Passenger"
 end
 

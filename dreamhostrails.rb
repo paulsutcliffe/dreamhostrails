@@ -10,12 +10,16 @@ inside('app/views/layouts') do
   FileUtils.rm 'application.html.erb'
 end
 
+inside('config') do
+  FileUtils.rm 'boot.rb'
+end
+
 # Downloads
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/Capfile", "Capfile"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/deploy.rb", "config/deploy.rb"
+get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/boot.rb", "config/boot.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/config/initializers/barista_config.rb", "config/initializers/barista_config.rb"
 get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/app/views/layouts/application.html.haml", "app/views/layouts/application.html.haml"
-get "https://raw.github.com/paulsutcliffe/dreamhostrails/master/public/.htaccess", "public/.htaccess"
 
 gsub_file 'Rakefile', /#{app_name.camelize}::Application.load_tasks/, '#fix for ruby 1.8.7'
 append_file 'Rakefile', <<-CODE
@@ -68,7 +72,6 @@ gem "sitemap_generator"
 group :test do
   gem "cucumber-rails"
   gem "database_cleaner"
-  gem "factory_girl_rails", "~> 2.0"
 end
 
 gem 'rspec-rails', :group => [:development, :test]
@@ -118,7 +121,7 @@ CODE
 
 initializer 'i18n.rb',
 %q{#encoding: utf-8
-I18n.default_locale = :es
+I18n.default_locale = :en
 
 LANGUAGES = [
   ['English',                  'en'],
@@ -137,42 +140,13 @@ end
 
 gsub_file 'config/environment.rb', /# Load the rails application/ do
 "# Load the rails application
-ENV['HOME'] ||= `echo ~`.strip
 ENV['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
-ENV['GEM_HOME'] = File.expand_path('~/.gems')"
 end
 
-file "public/dispatch.fcgi", <<-CODE
-#!/usr/bin/ruby
-
-# Dreamhost clears environment variables when calling dispatch.fcgi, so set them here
-ENV['RAILS_ENV'] ||= 'production'
-ENV['HOME'] ||= `echo ~`.strip
-ENV['GEM_HOME'] = File.expand_path('~/.gems')
-ENV['GEM_PATH'] = File.expand_path('~/.gems') + ":" + '/usr/lib/ruby/gems/1.8'
-
-require 'rubygems'
-Gem.clear_paths
-require 'fcgi'
-
-require File.join(File.dirname(__FILE__), '../config/environment')
-
-class Rack::PathInfoRewriter
- def initialize(app)
-   @app = app
- end
-
- def call(env)
-   env.delete('SCRIPT_NAME')
-   parts = env['REQUEST_URI'].split('?')
-   env['PATH_INFO'] = parts[0]
-   env['QUERY_STRING'] = parts[1].to_s
-   @app.call(env)
- end
+gsub_file 'config/boot.rb', /# Load the rails application/ do
+"# Load the rails application
+ENV['GEM_PATH'] = File.expand_path('~/.gems') + ':' + '/usr/lib/ruby/gems/1.8'
 end
-
-Rack::Handler::FastCGI.run  Rack::PathInfoRewriter.new(#{app_name.camelize}::Application)
-CODE
 
 # Setup Google Analytics
 if ask("Do you have Google Analytics key? (N/y)").upcase == 'Y'
