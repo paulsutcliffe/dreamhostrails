@@ -11,7 +11,7 @@ inside('app/views/layouts') do
 end
 
 inside('config') do
-  FileUtils.rm 'boot.rb'
+  FileUtils.rm %w(boot.rb environment.rb)
 end
 
 # Downloads
@@ -35,6 +35,16 @@ module ::RakeFileUtils
 end
 
 #{app_name.camelize}::Application.load_tasks
+CODE
+
+file "config/environment.rb", <<-CODE
+# Load the rails application
+ENV['GEM_PATH'] = File.expand_path('~/.gems') + ':/usr/lib/ruby/gems/1.8'
+
+require File.expand_path('../application', __FILE__)
+
+# Initialize the rails application
+#{app_name.camelize}::Application.initialize!
 CODE
 
 # Update Gemfile
