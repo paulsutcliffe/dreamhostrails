@@ -20,27 +20,29 @@ The full article is here: `http://blog.joeygeiger.com/2010/05/17/i-beat-dreamhos
 
 But if you are lazy or desperate, you can just do the following:<br>
 
-Add this to your .bashrc<br>
-`export PATH=$HOME/.gems/bin:$HOME/opt/bin:$PATH
-export GEM_HOME=$HOME/.gems
-export GEM_PATH="$GEM_HOME"
-export RUBYLIB="$HOME/opt/lib:$RUBYLIB"
+Add this to your .bashrc:
 
-alias gem="nice -n19 ~/opt/bin/gem"`<br>
+    export PATH=$HOME/.gems/bin:$HOME/opt/bin:$PATH
+    export GEM_HOME=$HOME/.gems
+    export GEM_PATH="$GEM_HOME"
+    export RUBYLIB="$HOME/opt/lib:$RUBYLIB"
 
-This will setup your shell to use local gems installed in your .gems directory, setup the path to check there first and opt/bin as well. Next we need to install a newer version of rubygems.<br>
-`mkdir ~/src
-mkdir ~/opt
-cd src
-wget http://production.cf.rubygems.org/rubygems/rubygems-1.3.7.tgz
-tar xvfz rubygems-1.3.7.tgz
-cd rubygems-1.3.7
-ruby setup.rb --prefix=$HOME/opt
-cd ~/opt/bin/
-ln -s gem1.8 gem
-gem update --system
-gem install bundler
-gem install rake`<br>
+    alias gem="nice -n19 ~/opt/bin/gem"
+
+This will setup your shell to use local gems installed in your .gems directory, setup the path to check there first and opt/bin as well. Next we need to install a newer version of rubygems:
+
+    mkdir ~/src
+    mkdir ~/opt
+    cd src
+    wget http://production.cf.rubygems.org/rubygems/rubygems-1.3.7.tgz
+    tar xvfz rubygems-1.3.7.tgz
+    cd rubygems-1.3.7
+    ruby setup.rb --prefix=$HOME/opt
+    cd ~/opt/bin/
+    ln -s gem1.8 gem
+    gem update --system
+    gem install bundler
+    gem install rake`<br>
 
 You can make a clone and apply the template locally:<br>
 `rails new <appname> -d mysql -m <path/to/dremahostrails.rb>`<br>
