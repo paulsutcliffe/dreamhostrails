@@ -1,7 +1,7 @@
-dreamhostrails
-==============
+Dreamhost Rails App Template for Shared Servers
+===============================================
 
-Template for deploy Ruby on Rails applications on the shared web servers at Dreamhost
+A Template for deploy Ruby on Rails applications on the shared web servers at Dreamhost, with coffescript, sass, and some spice new stuff that wasn't originally included with the only 3.0.3 rails version that works on dh.
 
 Important
 ==========
@@ -42,7 +42,7 @@ This will setup your shell to use local gems installed in your .gems directory, 
     ln -s gem1.8 gem
     gem update --system
     gem install bundler
-    gem install rake`<br>
+    gem install rake
 
 You can make a clone and apply the template locally:<br>
 `rails new <appname> -d mysql -m <path/to/dremahostrails.rb>`<br>
