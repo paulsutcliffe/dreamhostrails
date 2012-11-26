@@ -47,7 +47,6 @@ require File.expand_path('../application', __FILE__)
 CODE
 
 # Update Gemfile
-gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
 gsub_file 'Gemfile', /# gem 'capistrano'/, 'gem "capistrano"'
 append_file "Gemfile", <<-CODE
 group :development do
@@ -66,17 +65,12 @@ gem "haml-rails"
 gem "paperclip", "~>2.0"
 gem "will_paginate"
 gem "inherited_resources"
-gem "rake", "~>0.9.2"
-gem "client_side_validations"
 gem "jquery-rails"
-gem "paper_trail"
 gem "metamagic"
 gem "friendly_id", "~>4.0.0.beta14"
 gem "devise"
-gem "nifty-generators"
 gem "auto_html"
 gem "page_title_helper"
-gem "sitemap_generator"
 
 group :test do
   gem "cucumber-rails"

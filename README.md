@@ -40,7 +40,6 @@ This will setup your shell to use local gems installed in your .gems directory, 
     ruby setup.rb --prefix=$HOME/opt
     cd ~/opt/bin/
     ln -s gem1.8 gem
-    gem update --system
     gem install bundler
     gem install rake
 
