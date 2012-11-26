@@ -73,6 +73,7 @@ gem "devise"
 gem "auto_html"
 gem "page_title_helper"
 gem 'rdoc'
+gem "rake", "~>0.9.2"
 
 group :test do
   gem "cucumber-rails"
