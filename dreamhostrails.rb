@@ -47,6 +47,7 @@ require File.expand_path('../application', __FILE__)
 CODE
 
 # Update Gemfile
+gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
 gsub_file 'Gemfile', /# gem 'capistrano'/, 'gem "capistrano"'
 append_file "Gemfile", <<-CODE
 group :development do
