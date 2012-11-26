@@ -72,6 +72,7 @@ gem "friendly_id", "~>4.0.0.beta14"
 gem "devise"
 gem "auto_html"
 gem "page_title_helper"
+gem 'rdoc'
 
 group :test do
   gem "cucumber-rails"
