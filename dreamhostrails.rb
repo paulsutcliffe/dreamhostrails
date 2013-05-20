@@ -78,6 +78,7 @@ gem "rake", "~>0.9.2"
 group :test do
   gem "cucumber-rails"
   gem "database_cleaner"
+  gem "capybara", "2.0.3"
 end
 
 gem 'rspec-rails', :group => [:development, :test]
