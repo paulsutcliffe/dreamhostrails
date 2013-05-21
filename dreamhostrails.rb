@@ -186,8 +186,8 @@ append_file "app/views/layouts/application.html.haml", <<-CODE
 CODE
 end
 
-rake "db:create"
-rake "db:migrate"
+run "bundle exec rake db:create"
+run "bundle exec rake db:migrate"
 
 # Plugins
 run "rails g jquery:install --ui"
