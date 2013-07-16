@@ -61,6 +61,7 @@ group :development do
   gem 'susy'
 end
 
+gem "nokogiri", "< 1.6"
 gem "haml"
 gem "haml-rails"
 gem "paperclip", "~>2.0"
