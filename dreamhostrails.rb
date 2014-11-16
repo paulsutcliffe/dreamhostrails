@@ -51,32 +51,36 @@ gsub_file 'Gemfile', /gem 'mysql2'/, 'gem "mysql2", "~> 0.2.7"'
 gsub_file 'Gemfile', /# gem 'capistrano'/, 'gem "capistrano"'
 append_file "Gemfile", <<-CODE
 group :development do
+  gem 'execjs', '2.0.0'
   gem 'barista'
   gem 'yui-compressor', :require => 'yui/compressor'
   gem 'sass'
   gem 'json' # sprocket dependency for Ruby 1.8 only
-  gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git'
-  gem 'compass', '>= 0.13.alpha.0'
-  gem 'compass-rails', '>= 1.0.2'
+  gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git', :tag => 'v2.12.3'
+  gem 'compass', '0.13.alpha.12'
+  gem 'compass-rails', '<2.0.0'
   gem 'susy'
 end
 
-gem "haml"
+gem 'haml', '~> 4.0.5'
 gem "haml-rails"
 gem "paperclip", "~>2.0"
 gem "will_paginate"
 gem "inherited_resources"
 gem "jquery-rails"
-gem "metamagic"
+gem "metamagic", "~>2.0.5"
 gem "friendly_id", "~>4.0.0.beta14"
 gem "devise"
-gem "auto_html"
+gem "auto_html", "1.6.0"
 gem "page_title_helper"
 gem 'rdoc'
 gem "rake", "~>0.9.2"
+gem "nokogiri", "<1.6"
+gem "redcarpet", "2.3.0"
+gem "rubyzip", "<1.0.0"
 
 group :test do
-  gem "cucumber-rails"
+  gem "cucumber-rails", "1.3.1"
   gem "database_cleaner"
   gem "capybara", "2.0.3"
 end
@@ -105,7 +109,7 @@ defaults: &defaults
   pool: 5
   username: #{db_user}
   password: #{db_password}
-  socket: /tmp/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
 
 development:
   database: #{app_name.camelize(:lower)}_development
